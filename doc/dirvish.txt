@@ -231,6 +231,14 @@ Check your 'isfname' setting. On Windows (where filepaths may contain
 backslashes "\") |fnamemodify()| may produce nonsense if 'isfname' does not
 contain the aforementioned unusual characters.
 
+Is there a way to use 'autochdir'?~
+Since autochdir is not supported, you can use this workaround: >
+    " 'autochdir' alternative to specify exceptions.
+    " Switch to the directory of the current file, unless it's a help or conflicts with dirvish.
+    autocmd BufEnter * if dirvish#can_autochdir() && match(['help', 'dirvish'], printf("\<%s\>", &ft)) < 0 && filereadable(expand("%")) | silent! cd %:p:h | endif
+<
+Alternatively, you can use |BufReadPost| instead of |BufEnter| to change directories only on load.
+
 How to override the netrw :Explore, :Sexplore, :Vexplore commands? ~
 Put this in your vimrc: >
 

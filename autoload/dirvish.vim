@@ -4,6 +4,9 @@ let s:noswapfile = (2 == exists(':noswapfile')) ? 'noswapfile' : ''
 let s:noau       = 'silent noautocmd keepjumps'
 let s:cb_map = {}   " callback map
 
+" Can autochdir when <= 0, should set autochdir when < 0.
+let s:dirvish_autochdir_blocked_level = 0 - &autochdir
+
 function! s:msg_error(msg) abort
   redraw | echohl ErrorMsg | echomsg 'dirvish:' a:msg | echohl None
 endfunction
@@ -288,10 +291,22 @@ function! s:set_altbuf(bnr) abort
   if has('patch-7.4.605') | let @# = a:bnr | return | endif
 
   let curbuf = bufnr('%')
+
+  set noautochdir
+  let s:dirvish_autochdir_blocked_level += 1
+
   if s:try_visit(a:bnr, 1)
     let noau = bufloaded(curbuf) ? 'noau' : ''
     " Return to the current buffer.
     execute 'silent keepjumps' noau s:noswapfile 'buffer' curbuf
+  endif
+
+  let s:dirvish_autochdir_blocked_level -= 1
+
+  if s:should_autochdir()
+    " TODO: Using autochdir still breaks other things (buffername is sometimes
+    " empty).
+    "set autochdir
   endif
 endfunction
 
@@ -472,9 +487,17 @@ function! s:buf_isvalid(bnr) abort
   return bufexists(a:bnr) && !isdirectory(s:sl(bufname(a:bnr)))
 endfunction
 
+function! s:should_autochdir() abort
+  return s:dirvish_autochdir_blocked_level == -1
+endfunction
+
+function! dirvish#can_autochdir() abort
+  return s:dirvish_autochdir_blocked_level <= 0
+endfunction
+
 function! dirvish#open(...) range abort
   if &autochdir
-    call s:msg_error("'autochdir' is not supported")
+    call s:msg_error("'autochdir' is not supported. See help for workaround.")
     return
   endif
   if !&autowriteall && !&hidden && &modified
