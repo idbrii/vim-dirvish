@@ -508,6 +508,10 @@ func! s:open_dir(d, reload) abort
     execute 'silent' s:noswapfile 'buffer' bnr
   endif
 
+  if g:dirvish_autochdir && exists('*chdir')
+    call chdir(bufname('%'))
+  endif
+
   " Force a normalized directory path.
   " - Starts with "~/" or "/", ie absolute (important for ":h").
   " - Ends with "/".

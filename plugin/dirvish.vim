@@ -6,6 +6,8 @@ let g:loaded_dirvish = 1
 " Dirvish supplants nvim's basic dir plugin.
 let g:loaded_nvim_dir_plugin = 0
 
+let g:dirvish_autochdir = get(g:, 'dirvish_autochdir', 0)
+
 command! -bar -nargs=? -complete=dir Dirvish call dirvish#open(<q-args>)
 command! -nargs=* -complete=file -range -bang Shdo call dirvish#shdo(<bang>0 ? argv() : getline(<line1>, <line2>), <q-args>)
 
