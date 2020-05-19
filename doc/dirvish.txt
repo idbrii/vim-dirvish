@@ -129,6 +129,12 @@ dirvish#remove_icon_fn(fn_id)
 ==============================================================================
 OPTIONS                                                      *dirvish-options*
 
+g:dirvish_autochdir = 0                             *g:dirvish_autochdir*
+    Automatically |chdir()| to the current dirvish directory. Similar to
+    'autochdir' but only within the dirvish window.
+    0:        Don't modify the current working directory.
+    1:        Change vim's cwd as you navigate directories within dirvish.
+
 g:dirvish_mode = 1                                  *g:dirvish_mode*
     Controls which files are listed and how they are presented.
     1:        'suffixes' and 'wildignore' determine sorting and visibility.

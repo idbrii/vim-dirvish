@@ -3,6 +3,7 @@ if exists('g:loaded_dirvish') || &cp || v:version < 700 || &cpo =~# 'C'
 endif
 let g:loaded_dirvish = 1
 
+let g:dirvish_autochdir = get(g:, 'dirvish_autochdir', 0)
 let g:dirvish_shdo_preamble = get(g:, 'dirvish_shdo_preamble', '')
 
 command! -bar -nargs=? -complete=dir Dirvish call dirvish#open(<q-args>)

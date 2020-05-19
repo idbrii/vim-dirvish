@@ -436,6 +436,10 @@ function! s:open_dir(d, reload) abort
     execute 'silent' s:noswapfile 'buffer' bnr
   endif
 
+  if g:dirvish_autochdir && exists('*chdir')
+    call chdir(bufname('%'))
+  endif
+
   " Use :file to force a normalized path.
   " - Avoids ".././..", ".", "./", etc. (breaks %:p, not updated on :cd).
   " - Avoids [Scratch] in some cases (":e ~/" on Windows).
